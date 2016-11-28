@@ -75,12 +75,16 @@ class LDAPAttributesBehavior(Behavior):
         #    attrlist.append('memberOf')
 
         # fetch attributes for ldap_node
-        entry = ldap_node.ldap_session.search(
+        xentry = ldap_node.ldap_session.search(
             scope=BASE,
             baseDN=ldap_node.DN.encode('utf-8'),
             force_reload=ldap_node._reload,
             attrlist=attrlist,
         )
+        if len(xentry) > 1:
+            entry = xentry[:1]
+        if len(xentry) == 1:
+            entry = xentry
         # result length must be 1
         if len(entry) != 1:
             raise RuntimeError(                            # pragma NO COVERAGE
